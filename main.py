@@ -18,20 +18,76 @@ def reqFileName ():
     print("\033[0;31;40mInvalid \033[1;31;40mFile name.\033[0;37;40m ")
     return reqFileName()
 
-# 
+# Checks if user data derectory already exists
 def checkUsrData ():
   path = ".usrdata"
   if not os.path.isdir(path):
     os.mkdir(path)
 
+# Request user to enter file's number.
+def reqLineNumber():
+  line = ""
+  while not line.isdigit():
+    if line:
+      print("\033[0;31;40mInvalid \033[1;31;number\033[0;37;40m ")
+    line = input("Please enter a line number:")
+  return line
+
+# Request user to enter a note.
+def reqNote():
+  line = ""
+  while not line.trim():
+    if line:
+      print("\033[0;31;40mEmpty \033[1;31;40m note.")
+    line = input("Please enter a line number:")
+  return line
+
+
 # Checks if file already exists and prompt options
 def chekFile (file):
-  if os.path.isfile(".usrdata/" + path):
-    action = input("Please enter \033[1;32;40mFile\033[0;37;40m name: ").lower()
+  act = []
+  if os.path.isfile(".usrdata/" + file):
+    action = ""
+    while action not in ['r', 'd', 'a', 'l']:
+      if action:
+        print("\033[0;31;40mInvalid \033[1;31;40moption\033[0;37;40m ")
+      print("Please select an option:\n \033[1;33;40mr\033[0;37;40m - Read file\n \033[1;31;40md\033[0;37;40m - Delete the file and start over\n \033[1;36;40ma\033[0;37;40m - Append the file\n \033[1;32;40ml\033[0;37;40m - Replace a single line\n")
+      action = input("Option:").lower()
+      act.append(action)
+      if action == 'l':
+        line = reqLineNumber()
+        act.append(line)
   else:
-    name = input("You are creating a \033[1;36;40mnew File\033[0;37;40m.Please enter  name: ").lower()
+    act.append("w")
+  return act
 
-  return
+# Handle user's selected option
+def handleOption (file, op):
+  if op[0] == 'w':
+    note = input("You are creating a \033[1;36;40mnew File\033[0;37;40m. Please enter the note:\n")
+    noteFile = open(".usrdata/" + file, "w")
+    noteFile.write(note)
+    noteFile.close()
+  elif op[0] == 'd':
+    note = input("This file is now \033[1;31;40mempty\033[0;37;40m. Please enter a new note:\n")
+    noteFile = open(".usrdata/" + file, "w")
+    noteFile.write(note)
+    noteFile.close()
+  elif op[0] == 'a':
+    note = input("Please enter a new note:\n")
+    noteFile = open(".usrdata/" + file, "a")
+    noteFile.write(note)
+    noteFile.close()
+  elif op[0] == 'r':
+    noteFile = open(".usrdata/" + file, "r")
+    l = 0
+    for line in noteFile:
+      l+=1
+      print("\033[1;33;40m[\033[0;35;40m"+ str(l) + "\033[1;33;40m]\033[0;37;40m " + line, end="")
+    print()
+    noteFile.close()
 
 file_name = reqFileName()
 checkUsrData()
+actions = chekFile(file_name)
+handleOption(file_name, actions)
