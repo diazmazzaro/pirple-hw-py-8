@@ -90,13 +90,22 @@ def handleOption (file, op):
     print()
     noteFile.close()
   elif op[0] == 'l':
-    noteFile = open(".usrdata/" + file, "r+")
+    noteFile = open(".usrdata/" + file, "r")
     lines = noteFile.readlines()
+    noteFile.close()
     ln = int(op[1]);
     while ln > len(lines):
+      print("\033[0;31;40mInvalid \033[1;31;40mline number\033[0;37;40m (1-" + str(len(lines)) + ")")
       ln = int(reqLineNumber())
     note = reqNote("Please enter a new note:\n")
-    lines.insert(ln-1, note)
+    lines[ln-1] = note
+    noteFile = open(".usrdata/" + file, "w")
+    while len(lines):
+      line = lines.pop(0)
+      if not line[-1] == "\n" and len(lines):
+        line += "\n"
+      noteFile.write(line)
+    noteFile.close()
 
 
 file_name = reqFileName()
