@@ -34,13 +34,13 @@ def reqLineNumber():
   return line
 
 # Request user to enter a note.
-def reqNote():
-  line = ""
-  while not line.trim():
-    if line:
+def reqNote(msg):
+  note = ""
+  while not note.trim():
+    if note:
       print("\033[0;31;40mEmpty \033[1;31;40m note.")
-    line = input("Please enter a line number:")
-  return line
+    note = input(msg)
+  return note
 
 
 # Checks if file already exists and prompt options
@@ -64,19 +64,19 @@ def chekFile (file):
 # Handle user's selected option
 def handleOption (file, op):
   if op[0] == 'w':
-    note = input("You are creating a \033[1;36;40mnew File\033[0;37;40m. Please enter the note:\n")
+    note = reqNote("You are creating a \033[1;36;40mnew File\033[0;37;40m. Please enter the note:\n")
     noteFile = open(".usrdata/" + file, "w")
     noteFile.write(note)
     noteFile.close()
   elif op[0] == 'd':
-    note = input("This file is now \033[1;31;40mempty\033[0;37;40m. Please enter a new note:\n")
+    note = reqNote("This file is now \033[1;31;40mempty\033[0;37;40m. Please enter a new note:\n")
     noteFile = open(".usrdata/" + file, "w")
     noteFile.write(note)
     noteFile.close()
   elif op[0] == 'a':
-    note = input("Please enter a new note:\n")
+    note = reqNote("Please enter a new note:\n")
     noteFile = open(".usrdata/" + file, "a")
-    noteFile.write(note)
+    noteFile.write("\n" + note)
     noteFile.close()
   elif op[0] == 'r':
     noteFile = open(".usrdata/" + file, "r")
