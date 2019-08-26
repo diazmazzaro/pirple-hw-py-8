@@ -36,10 +36,13 @@ def reqLineNumber():
 # Request user to enter a note.
 def reqNote(msg):
   note = ""
-  while not note.trim():
-    if note:
-      print("\033[0;31;40mEmpty \033[1;31;40m note.")
-    note = input(msg)
+  f = True
+  while not note:
+    if not f:
+      print("\033[0;31;40mEmpty \033[1;31;40mnote.\033[0;37;40m")
+    else:
+      f = False
+    note = input(msg).strip()
   return note
 
 
@@ -86,6 +89,15 @@ def handleOption (file, op):
       print("\033[1;33;40m[\033[0;35;40m"+ str(l) + "\033[1;33;40m]\033[0;37;40m " + line, end="")
     print()
     noteFile.close()
+  elif op[0] == 'l':
+    noteFile = open(".usrdata/" + file, "r+")
+    lines = noteFile.readlines()
+    ln = int(op[1]);
+    while ln > len(lines):
+      ln = int(reqLineNumber())
+    note = reqNote("Please enter a new note:\n")
+    lines.insert(ln-1, note)
+
 
 file_name = reqFileName()
 checkUsrData()
